@@ -1,0 +1,25 @@
+{
+  "name": "treehouse-fsjs-project-3",
+  "version": "1.0.0",
+  "description": "Interactive Form",
+  "main": "app.js",
+  "dependencies": {
+    "eslint": "^4.19.1"
+  },
+  "devDependencies": {
+    "eslint-config-google": "^0.9.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/interstellardev/Treehouse-FSJS-Project-3.git"
+  },
+  "author": "Mike Tallerico",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/interstellardev/Treehouse-FSJS-Project-3/issues"
+  },
+  "homepage": "https://github.com/interstellardev/Treehouse-FSJS-Project-3#readme"
+}
