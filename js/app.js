@@ -13,36 +13,71 @@ function setFocus(element) {
     element.focus();
 }
 
+// simple function that hides an element
+function hideEl(el) {
+    el.style.display = 'none'
+}
+
+// simple function that shows an element
+function showEl(el, displayProp) {
+    el.style.display = [displayProp];
+}
+
 // This function adds and input element if "other" is selected from the Job role select field.
 function addOtherJob () {
     fieldset[0].appendChild(input)
             .setAttribute('id', 'other-title');
     const otherJob = document.querySelector('#other-title');
     otherJob.setAttribute('placeholder', 'Your Job Role');
-    otherJob.style.display = 'none';
+    hideEl(otherJob);
     jobRole.addEventListener('change', () => {
         if (jobRole.value === 'other') {
-            otherJob.style.display = 'block';
+            showEl(otherJob, 'block');
+            // otherJob.style.display = 'block';
         } else {
-            otherJob.style.display = 'none';
+            hideEl(otherJob);
         }
     }); 
 }
 addOtherJob();
 
-//this function removes
+//this function removes color options based of tshirt choice
 function setColorOptions () {
-    const tshirtDesign = document.querySelector('#design').children;
-    const colorChoices = document.querySelector('#colors-js-puns').children;
-    if (tshirtDesign.value === 'js puns') {
-        for (let i = 0; i < colorChoices.length; i++) {
-            let color = colorChoices[i].value;
-            colorChoices[i].style.display = 'none';
-            if (color === 'cornflowerblue' || color === 'darkslategrey' || color === 'gold' ) {
-                colorChoices[i].style.display = '';
+    const tshirtDesign = document.querySelector('#design');
+    const colorLabel = document.querySelector('#colors-js-puns label');
+    const colorSelection = document.querySelector('#color');
+    const colorChoices = document.querySelectorAll('#color option');
+    hideEl(colorLabel);
+    hideEl(colorSelection);
+    tshirtDesign.addEventListener('change', () => {
+        if (tshirtDesign.value === 'js puns') {
+            showEl(colorLabel, '');
+            showEl(colorSelection, '');
+            for (let i = 0; i < colorChoices.length; i++) {
+                let color = colorChoices[i];
+                colorValue = color.value;
+                hideEl(colorChoices[i]);
+                if (colorValue === 'cornflowerblue' || colorValue === 'darkslategrey' || colorValue === 'gold' ) {
+                    showEl(colorChoices[i], '');
+                }
             }
+        }  else if (tshirtDesign.value === 'heart js') {
+            colorLabel.style.display = '';
+            colorSelection.style.display = '';
+            for (let i = 0; i < colorChoices.length; i++) {
+                let color = colorChoices[i];
+                colorValue = color.value;
+                hideEl(colorChoices[i]);
+                if (colorValue === 'tomato' || colorValue === 'steelblue' || colorValue === 'dimgrey' ) {
+                    showEl(colorChoices[i], '');
+                }
+            } 
+        } else {
+            hideEl(colorLabel);
+            hideEl(colorSelection);
         }
-    }
+    });
+    
 }
 setColorOptions();
 
