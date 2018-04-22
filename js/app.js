@@ -25,10 +25,7 @@ function showEl(el, displayProp) {
 
 // This function adds and input element if "other" is selected from the Job role select field.
 function addOtherJob () {
-    fieldset[0].appendChild(input)
-            .setAttribute('id', 'other-title');
     const otherJob = document.querySelector('#other-title');
-    otherJob.setAttribute('placeholder', 'Your Job Role');
     hideEl(otherJob);
     jobRole.addEventListener('change', () => {
         if (jobRole.value === 'other') {
@@ -81,3 +78,14 @@ function setColorOptions () {
 }
 setColorOptions();
 
+function setOptions () {
+    const jsFramework = document.querySelectorAll('[name="js-frameworks"]');
+    const jsLibs = document.querySelectorAll('[name="js-libs"]');
+    const express = document.querySelectorAll('[name="express"]');
+    const node = document.querySelectorAll('[name="node"]');
+    const buildTools = document.querySelectorAll('[name="build-tools"]');
+    const npm = document.querySelectorAll('[name="npm"]');
+    console.log(jsFramework.parentElement);
+}
+
+setOptions();

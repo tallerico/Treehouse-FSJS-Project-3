@@ -113,6 +113,10 @@ button:hover {
 	background: #184c62;
 }
 
+.notAvail {
+	color: darkgray;
+}
+
 /* ================================= 
   Page Styles
 ==================================== */
