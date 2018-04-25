@@ -82,26 +82,32 @@ function setOptions () {
     const activities = document.querySelectorAll('.activities label input');
     // const jsFramework = document.querySelector('[name="js-frameworks"]');
     // const jsLibs = document.querySelector('[name="js-libs"]');
-    // const express = document.querySelector('[name="express"]');
+    // const express = document.querySelector('[name="express"]');f
     // const node = document.querySelector('[name="node"]');
     // const buildTools = document.querySelector('[name="build-tools"]');
     // const npm = document.querySelector('[name="npm"]');
     for (let i = 0; i < activities.length; i++) {
         const inputEl = activities[i];
         inputEl.addEventListener('change', (e) => {
-            if (activities[1].checked) {
+            const checked = e.target.checked;;
+            if (checked == activities[1].checked) {
                 activities[3].parentElement.classList.add('notAvail');
                 activities[3].disabled = true;
-            } else if (activities[2].checked) {
+            } else if (checked == activities[3].checked) {
+                activities[1].parentElement.classList.add('notAvail');
+                activities[1].disabled = true;
+            } else if (checked == activities[2].checked) {
                 activities[4].parentElement.classList.add('notAvail');
                 activities[4].disabled = true;
-            } else if (!activities[1].checked || !activities[2].checked) {
-                for (let i = 0; i <activities.length; i++) {
+            } else if (checked == activities[4].checked) {
+                activities[2].parentElement.classList.add('notAvail');
+                activities[2].disabled = true;
+            } else if (checked === false) {
+                for (let i = 0; i < activities.length; i++) {
                     activities[i].parentElement.classList.remove('notAvail');
                     activities[i].disabled = false;
-                }
-                
-            }
+                }  
+            }             
         });
     }
     
