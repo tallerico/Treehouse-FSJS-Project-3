@@ -74,48 +74,80 @@ function setColorOptions () {
             hideEl(colorSelection);
         }
     });
-    
 }
 setColorOptions();
 
 
 
-function setOptions () {
-    const activities = document.querySelector('.activities');
-    const activitiesCheck = document.querySelectorAll('.activities label input');
-    function totalCost() {
-    
-    }
-    activities.addEventListener('change', (event) => {
-        const inputChecked = event.target;
-        const isChecked = inputChecked.checked;
-        if (event.target.tagName === 'INPUT') {
-            
-            if (activitiesCheck[1].checked) {
-                activitiesCheck[3].parentElement.classList.add('notAvail');
-                activitiesCheck[3].disabled = true;
-            } else if (activitiesCheck[3].checked) {
-                activitiesCheck[1].parentElement.classList.add('notAvail');
-                activitiesCheck[1].disabled = true;
-            } else if (activitiesCheck[2].checked) {
-                activitiesCheck[4].parentElement.classList.add('notAvail');
-                activitiesCheck[4].disabled = true;
-            } else if (activitiesCheck[4].checked) {
-                activitiesCheck[2].parentElement.classList.add('notAvail');
-                activitiesCheck[2].disabled = true;
-            } else if ((inputChecked === activitiesCheck[1] && isChecked === false) || (inputChecked === activitiesCheck[3] && isChecked === false)) {
-                activitiesCheck[1].parentElement.classList.remove('notAvail');
-                activitiesCheck[1].disabled = false;
-                activitiesCheck[3].parentElement.classList.remove('notAvail');
-                activitiesCheck[3].disabled = false;
-            } else if ((inputChecked === activitiesCheck[2] && isChecked === false) || (inputChecked === activitiesCheck[4] && isChecked === false)) {
-                activitiesCheck[2].parentElement.classList.remove('notAvail');
-                activitiesCheck[2].disabled = false;
-                activitiesCheck[4].parentElement.classList.remove('notAvail');
-                activitiesCheck[4].disabled = false;
-            } 
-        }
-    });
-}    
-setOptions();
+// function setOptions() {
+//     const activities = document.querySelector('.activities');
+//     const activitiesCheck = document.querySelectorAll('.activities label input');
+//     activities.addEventListener('change', (event) => {
+//         const inputChecked = event.target;
+//         const isChecked = inputChecked.checked;
+//         if (event.target.tagName === 'INPUT') {
 
+
+//             // if (activitiesCheck[1].checked) {
+//             //     activitiesCheck[3].parentElement.classList.add('notAvail');
+//             //     activitiesCheck[3].disabled = true;
+//             // } else if (activitiesCheck[3].checked) {
+//             //     activitiesCheck[1].parentElement.classList.add('notAvail');
+//             //     activitiesCheck[1].disabled = true;
+//             // } else if (activitiesCheck[2].checked) {
+//             //     activitiesCheck[4].parentElement.classList.add('notAvail');
+//             //     activitiesCheck[4].disabled = true;
+//             // } else if (activitiesCheck[4].checked) {
+//             //     activitiesCheck[2].parentElement.classList.add('notAvail');
+//             //     activitiesCheck[2].disabled = true;
+//             // } else if ((inputChecked === activitiesCheck[1] && isChecked === false) || (inputChecked === activitiesCheck[3] && isChecked === false)) {
+//             //     activitiesCheck[1].parentElement.classList.remove('notAvail');
+//             //     activitiesCheck[1].disabled = false;
+//             //     activitiesCheck[3].parentElement.classList.remove('notAvail');
+//             //     activitiesCheck[3].disabled = false;
+//             // } else if ((inputChecked === activitiesCheck[2] && isChecked === false) || (inputChecked === activitiesCheck[4] && isChecked === false)) {
+//             //     activitiesCheck[2].parentElement.classList.remove('notAvail');
+//             //     activitiesCheck[2].disabled = false;
+//             //     activitiesCheck[4].parentElement.classList.remove('notAvail');
+//             //     activitiesCheck[4].disabled = false;
+//             // } 
+//         }
+//     });
+// }    
+// setOptions();
+
+function setOptions() {
+    const activities = document.querySelector('.activities');
+    const activitiesLabel = document.querySelectorAll('.activities label');
+    const checkboxes = document.querySelectorAll('.activities label input');
+    activities.addEventListener('change', (e) => {
+        //toggleing like events
+        function toggleConflict(list, selection) {
+            const conflict = [];
+            conflict.selection.push();
+            for (let i = 0; i < list.length; i++) {
+                
+            }
+        }
+
+        if (e.target.tagName === 'INPUT') {
+            const parentEl = e.target.parentElement;
+            const isChecked = e.target.checked;
+            const eventObject = {event: parentEl.textContent.split(/[—,$]/)[0].trim(),
+                                 time:  parentEl.textContent.split(/[—,$]/)[1].trim(),
+                                 price:  parentEl.textContent.split(/[$]/)[1].trim()
+                                };
+            console.log(eventObject);
+            for (let i = 0; i < checkboxes.length; i++) {
+                const check = checkboxes[i];
+                const label = check.parentElement;
+                const event = label.textContent.split(/[—,$]/)[0].trim();
+                const time = label.textContent.split(/[—,$]/)[1].trim(); 
+                const price = label.textContent.split(/[$]/)[1].trim();
+            }
+        }
+        
+    });
+
+}
+setOptions();
