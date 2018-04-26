@@ -123,14 +123,32 @@ function setOptions() {
     activities.addEventListener('change', (e) => {
         //toggleing like events
         function toggleConflict(list, selection) {
-            const conflict = [];
-            conflict.selection.push();
+            const parentEl = selection.parentElement;
+            const selectionChecked = selection.checked;
+            const selectionObject = {event: parentEl.textContent.split(/[—,$]/)[0].trim(),
+                time:  parentEl.textContent.split(/[—,$]/)[1].trim(),
+                price:  parentEl.textContent.split(/[$]/)[1].trim()
+               };
             for (let i = 0; i < list.length; i++) {
-                
+                const check = list[i];
+                const isChecked = check.checked;
+                const label = check.parentElement;
+                const event = label.textContent.split(/[—,$]/)[0].trim();
+                const time = label.textContent.split(/[—,$]/)[1].trim(); 
+                const price = label.textContent.split(/[$]/)[1].trim();
+                if ((selectionObject.time === time) && !isChecked) {
+                    check.parentElement.classList.add('notAvail');
+                    check.disabled = true;
+                } else if ((selectionObject.time === time) && !selectionChecked) {
+                    check.parentElement.classList.remove('notAvail');
+                    check.disabled = false;
+                }
             }
         }
 
         if (e.target.tagName === 'INPUT') {
+            const targetEl = e.target;
+            toggleConflict(checkboxes, targetEl);
             const parentEl = e.target.parentElement;
             const isChecked = e.target.checked;
             const eventObject = {event: parentEl.textContent.split(/[—,$]/)[0].trim(),
@@ -138,13 +156,7 @@ function setOptions() {
                                  price:  parentEl.textContent.split(/[$]/)[1].trim()
                                 };
             console.log(eventObject);
-            for (let i = 0; i < checkboxes.length; i++) {
-                const check = checkboxes[i];
-                const label = check.parentElement;
-                const event = label.textContent.split(/[—,$]/)[0].trim();
-                const time = label.textContent.split(/[—,$]/)[1].trim(); 
-                const price = label.textContent.split(/[$]/)[1].trim();
-            }
+            
         }
         
     });
