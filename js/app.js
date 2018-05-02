@@ -3,8 +3,7 @@ const nameInput = document.querySelector('#name');
 const jobRole = document.querySelector('#title');
 const label = document.createElement('label');
 const input = document.createElement('input');
-
-
+const p = document.createElement('p');
 
 document.addEventListener('load', setFocus(nameInput));
 
@@ -13,7 +12,8 @@ function setFocus(element) {
     element.focus();
 }
 
-// simple function that hides an element
+// simple function that hides an element  
+
 function hideEl(el) {
     el.style.display = 'none'
 }
@@ -22,6 +22,7 @@ function hideEl(el) {
 function showEl(el, displayProp) {
     el.style.display = [displayProp];
 }
+
 
 // This function adds and input element if "other" is selected from the Job role select field.
 function addOtherJob () {
@@ -79,87 +80,93 @@ setColorOptions();
 
 
 
-// function setOptions() {
-//     const activities = document.querySelector('.activities');
-//     const activitiesCheck = document.querySelectorAll('.activities label input');
-//     activities.addEventListener('change', (event) => {
-//         const inputChecked = event.target;
-//         const isChecked = inputChecked.checked;
-//         if (event.target.tagName === 'INPUT') {
 
 
-//             // if (activitiesCheck[1].checked) {
-//             //     activitiesCheck[3].parentElement.classList.add('notAvail');
-//             //     activitiesCheck[3].disabled = true;
-//             // } else if (activitiesCheck[3].checked) {
-//             //     activitiesCheck[1].parentElement.classList.add('notAvail');
-//             //     activitiesCheck[1].disabled = true;
-//             // } else if (activitiesCheck[2].checked) {
-//             //     activitiesCheck[4].parentElement.classList.add('notAvail');
-//             //     activitiesCheck[4].disabled = true;
-//             // } else if (activitiesCheck[4].checked) {
-//             //     activitiesCheck[2].parentElement.classList.add('notAvail');
-//             //     activitiesCheck[2].disabled = true;
-//             // } else if ((inputChecked === activitiesCheck[1] && isChecked === false) || (inputChecked === activitiesCheck[3] && isChecked === false)) {
-//             //     activitiesCheck[1].parentElement.classList.remove('notAvail');
-//             //     activitiesCheck[1].disabled = false;
-//             //     activitiesCheck[3].parentElement.classList.remove('notAvail');
-//             //     activitiesCheck[3].disabled = false;
-//             // } else if ((inputChecked === activitiesCheck[2] && isChecked === false) || (inputChecked === activitiesCheck[4] && isChecked === false)) {
-//             //     activitiesCheck[2].parentElement.classList.remove('notAvail');
-//             //     activitiesCheck[2].disabled = false;
-//             //     activitiesCheck[4].parentElement.classList.remove('notAvail');
-//             //     activitiesCheck[4].disabled = false;
-//             // } 
-//         }
-//     });
-// }    
-// setOptions();
-
-function setOptions() {
+/* a function to make sure that conflicting actitives cannot be chosen 
+as well as updates total price for all activivtes chosen by user*/ 
+function chooseActivities() {
     const activities = document.querySelector('.activities');
-    const activitiesLabel = document.querySelectorAll('.activities label');
-    const checkboxes = document.querySelectorAll('.activities label input');
-    activities.addEventListener('change', (e) => {
-        //toggleing like events
-        function toggleConflict(list, selection) {
-            const parentEl = selection.parentElement;
-            const selectionChecked = selection.checked;
-            const selectionObject = {event: parentEl.textContent.split(/[—,$]/)[0].trim(),
-                time:  parentEl.textContent.split(/[—,$]/)[1].trim(),
-                price:  parentEl.textContent.split(/[$]/)[1].trim()
-               };
-            for (let i = 0; i < list.length; i++) {
-                const check = list[i];
-                const isChecked = check.checked;
-                const label = check.parentElement;
-                const event = label.textContent.split(/[—,$]/)[0].trim();
-                const time = label.textContent.split(/[—,$]/)[1].trim(); 
-                const price = label.textContent.split(/[$]/)[1].trim();
-                if ((selectionObject.time === time) && !isChecked) {
-                    check.parentElement.classList.add('notAvail');
-                    check.disabled = true;
-                } else if ((selectionObject.time === time) && !selectionChecked) {
-                    check.parentElement.classList.remove('notAvail');
-                    check.disabled = false;
+    const eventsLabel = document.querySelectorAll('.activities label');
+    const eventChecks = document.querySelectorAll('.activities label input');
+    let total = 0;
+    
+    // this function disables any activity that has conflicting times.
+    function toggleConflict(choice, listCheck) {
+            const eventChecked = choice.checked;
+            const parentChosen = choice.parentElement;
+            const selectionTime = parentChosen.textContent.split(/[—,$]/)[1].trim();
+            const selectionEvent = parentChosen.textContent.split(/[—,$]/)[0].trim();
+            for (let i = 0; i < listCheck.length; i++) {
+                let conflict = listCheck[i];
+                const conflictParent = conflict.parentElement;
+                const conflictTime = conflictParent.textContent.split(/[—,$]/)[1].trim();
+                const conflictEvent =  conflictParent.textContent.split(/[—,$]/)[0].trim();
+                if ((selectionTime === conflictTime) && (selectionEvent != conflictEvent) && eventChecked) {
+                    conflictParent.classList.add('notAvail');
+                    conflict.disabled = true;
+                } else if ((selectionTime === conflictTime) && (selectionEvent != conflictEvent) && !eventChecked) {
+                    conflictParent.classList.remove('notAvail');
+                    conflict.disabled = false;
                 }
             }
-        }
 
-        if (e.target.tagName === 'INPUT') {
-            const targetEl = e.target;
-            toggleConflict(checkboxes, targetEl);
-            const parentEl = e.target.parentElement;
-            const isChecked = e.target.checked;
-            const eventObject = {event: parentEl.textContent.split(/[—,$]/)[0].trim(),
-                                 time:  parentEl.textContent.split(/[—,$]/)[1].trim(),
-                                 price:  parentEl.textContent.split(/[$]/)[1].trim()
-                                };
-            console.log(eventObject);
-            
+    }
+    //updates total based on selections.
+    function updatePrice(chosenActivitie) {
+        const parentChosen = chosenActivitie.parentElement;
+        const isChecked = chosenActivitie.checked;
+        const price = parentChosen.textContent.split(/[$]/)[1].trim();
+        if (isChecked) {
+           total += Number(price);
+        } else if (!isChecked) {
+           total -= Number(price);
         }
-        
-    });
-
+        activities.appendChild(p).innerHTML = `Total: $${total}`;
+    }
+    //listening for change to check boxes
+    activities.addEventListener('change', (e) => {
+        const eventChosen = e.target;
+        toggleConflict(eventChosen, eventChecks);
+        updatePrice(eventChosen);
+    }); 
 }
-setOptions();
+chooseActivities();        
+
+//displays proper fields based on payment method.
+function paymentInfo() {
+    const paymentMethod = document.querySelector('#payment');
+    const submitButton = document.querySelector('button[type="submit"]');
+    const creditCardInfo = document.querySelector('#credit-card');
+    const paypalInfo = document.querySelector('#paypal');
+    const bitcoinInfo = document.querySelector('#bitcoin');
+    hideEl(creditCardInfo);
+    hideEl(paypalInfo);
+    hideEl(bitcoinInfo);
+    submitButton.disabled = true;
+    paymentMethod.addEventListener('change', (e) => {
+        if (paymentMethod.value === 'select_method') {
+            submitButton.disabled = true;
+            hideEl(creditCardInfo);
+            hideEl(paypalInfo);
+            hideEl(bitcoinInfo);
+        } else if (paymentMethod.value === 'credit card') {
+            submitButton.disabled = false;
+            showEl(creditCardInfo, 'block');
+            hideEl(paypalInfo);
+            hideEl(bitcoinInfo);
+        } else if (paymentMethod.value === 'paypal') {
+            submitButton.disabled = false;
+            submitButton.removeAttribute('type');
+            submitButton.href = "https:\\www.paypal.com";
+            showEl(paypalInfo, 'block');
+            hideEl(creditCardInfo);
+            hideEl(bitcoinInfo);
+        } else if (paymentMethod.value === 'bitcoin') {
+            submitButton.disabled = false;
+            showEl(bitcoinInfo, 'block');
+            hideEl(creditCardInfo);
+            hideEl(paypalInfo);
+        }
+    });
+}
+paymentInfo();
