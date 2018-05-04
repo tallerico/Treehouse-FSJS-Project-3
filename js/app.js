@@ -101,10 +101,14 @@ function chooseActivities() {
                 const conflictParent = conflict.parentElement;
                 const conflictTime = conflictParent.textContent.split(/[—,$]/)[1].trim();
                 const conflictEvent =  conflictParent.textContent.split(/[—,$]/)[0].trim();
-                if ((selectionTime === conflictTime) && (selectionEvent != conflictEvent) && eventChecked) {
+                if ((selectionTime === conflictTime) && 
+                    (selectionEvent != conflictEvent) && 
+                    eventChecked) {
                     conflictParent.classList.add('notAvail');
                     conflict.disabled = true;
-                } else if ((selectionTime === conflictTime) && (selectionEvent != conflictEvent) && !eventChecked) {
+                } else if ((selectionTime === conflictTime) && 
+                           (selectionEvent != conflictEvent) && 
+                           !eventChecked) {
                     conflictParent.classList.remove('notAvail');
                     conflict.disabled = false;
                 }
@@ -139,10 +143,10 @@ function paymentInfo() {
     const creditCardInfo = document.querySelector('#credit-card');
     const paypalInfo = document.querySelector('#paypal');
     const bitcoinInfo = document.querySelector('#bitcoin');
-    hideEl(creditCardInfo);
+    const creditCardOption = document.querySelector('#payment option[value="credit card"]');
     hideEl(paypalInfo);
     hideEl(bitcoinInfo);
-    submitButton.disabled = true;
+    creditCardOption.setAttribute('selected', '');
     paymentMethod.addEventListener('change', (e) => {
         if (paymentMethod.value === 'select_method') {
             submitButton.disabled = true;
@@ -156,8 +160,6 @@ function paymentInfo() {
             hideEl(bitcoinInfo);
         } else if (paymentMethod.value === 'paypal') {
             submitButton.disabled = false;
-            submitButton.removeAttribute('type');
-            submitButton.href = "https:\\www.paypal.com";
             showEl(paypalInfo, 'block');
             hideEl(creditCardInfo);
             hideEl(bitcoinInfo);
@@ -170,3 +172,5 @@ function paymentInfo() {
     });
 }
 paymentInfo();
+
+
