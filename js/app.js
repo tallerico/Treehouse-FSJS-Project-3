@@ -9,6 +9,7 @@ const colorLabel = document.querySelector('#colors-js-puns label');
 const colorSelection = document.querySelector('#color');
 const colorChoices = document.querySelectorAll('#color option');
 const activities = document.querySelector('.activities');
+const activitesLegend = document.querySelector('.activities legend');
 const eventsLabel = document.querySelectorAll('.activities label');
 const eventChecks = document.querySelectorAll('.activities label input');
 const paymentMethod = document.querySelector('#payment');
@@ -17,12 +18,20 @@ const paypalInfo = document.querySelector('#paypal');
 const bitcoinInfo = document.querySelector('#bitcoin');
 const creditCardOption = document.querySelector('#payment option[value="credit card"]');
 const emailLabel = document.querySelector('label[for="mail"]');
+const ccNumber = document.querySelector('#cc-num');
+let ccInputs = [];
+const ccElList = document.querySelectorAll('#credit-card input');
+const ccZip = document.querySelector('#zip');
+const ccCvv = document.querySelector('#cvv');
 const label = document.createElement('label');
 const input = document.createElement('input');
 const p = document.createElement('p');
 let total = 0;
 
+//setting focus to name field
 document.addEventListener('load', setFocus(nameInput));
+// running validation check to show atleast one check needs to be checked before submit
+document.addEventListener('load', validateChecks(eventChecks));
 
 // reusable function to simply add focus to an element.
 function setFocus(element) {
@@ -85,7 +94,22 @@ tshirtDesign.addEventListener('change', () => {
     }
 });
 
-
+// validating checks in realtime
+function validateChecks(checkboxList) {
+    let checkedArray = [];
+    for (let i = 0; i < checkboxList.length; i++) {
+        if (checkboxList[i].checked) {
+            checkedArray.push(checkboxList[i]);
+        }
+    }
+    if (checkedArray.length >= 1) {
+        activitesLegend.removeAttribute('style');
+        activitesLegend.innerHTML = 'Register for Activities';
+    } else {
+        activitesLegend.style.color = 'red';
+        activitesLegend.innerHTML = 'Register for Activities:  Please choose a minimum of one.'
+    }
+}
     
     
 // this function disables any activity that has conflicting times.
@@ -130,27 +154,45 @@ function updatePrice(chosenActivitie) {
 //listening for change to check boxes
 activities.addEventListener('change', (e) => {
     const eventChosen = e.target;
+    validateChecks(eventChecks);
     toggleConflict(eventChosen, eventChecks);
     updatePrice(eventChosen);
 }); 
 
-      
+// function to add node list to an array
+function addListArray(list, arrayName) {;
+    for(let i = 0; i < list.length; i++) {
+        arrayName.push(list[i]);
+    }
+}
 
-//displays proper fields based on payment method.
+
+// displays proper fields based on payment method.
 hideEl(paypalInfo);
 hideEl(bitcoinInfo);
+// setting credit card option as default choice
 creditCardOption.setAttribute('selected', '');
 paymentMethod.addEventListener('change', (e) => {
-    if (paymentMethod.value === 'select_method') {
+        if (paymentMethod.value === 'select_method') {
         submitButton.disabled = true;
         hideEl(creditCardInfo);
         hideEl(paypalInfo);
         hideEl(bitcoinInfo);
     } else if (paymentMethod.value === 'credit card') {
+        ccInputs = [];
         submitButton.disabled = false;
         showEl(creditCardInfo, 'block');
         hideEl(paypalInfo);
         hideEl(bitcoinInfo);
+        addListArray(ccElList, ccInputs);
+// TODO finish conditional statements for validation of credit card info
+        ccInputs.forEach( (element) => {
+            element.addEventListener('input', (e) => {
+               if (e.target.id === 'cc-num') {
+                   console.log('credit card');
+               }
+            });
+        });
     } else if (paymentMethod.value === 'paypal') {
         submitButton.disabled = false;
         showEl(paypalInfo, 'block');
@@ -166,6 +208,8 @@ paymentMethod.addEventListener('change', (e) => {
 
 
 
+
+// realtime validation of email field.
 emailField.addEventListener('input', (e) => {
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(emailField.value)) {
         emailLabel.removeAttribute('style');
@@ -177,5 +221,7 @@ emailField.addEventListener('input', (e) => {
         emailField.setCustomValidity('Please Enter A Valid Email');
     }
 });
+
+
 
 
