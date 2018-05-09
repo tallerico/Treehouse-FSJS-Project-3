@@ -31,7 +31,7 @@ let total = 0;
 //setting focus to name field
 document.addEventListener('load', setFocus(nameInput));
 // running validation check to show atleast one check needs to be checked before submit
-document.addEventListener('load', validateChecks(eventChecks));
+// document.addEventListener('load', validateChecks(eventChecks));
 
 // reusable function to simply add focus to an element.
 function setFocus(element) {
@@ -95,21 +95,21 @@ tshirtDesign.addEventListener('change', () => {
 });
 
 // validating checks in realtime
-function validateChecks(checkboxList) {
-    let checkedArray = [];
-    for (let i = 0; i < checkboxList.length; i++) {
-        if (checkboxList[i].checked) {
-            checkedArray.push(checkboxList[i]);
-        }
-    }
-    if (checkedArray.length >= 1) {
-        activitesLegend.removeAttribute('style');
-        activitesLegend.innerHTML = 'Register for Activities';
-    } else {
-        activitesLegend.style.color = 'red';
-        activitesLegend.innerHTML = 'Register for Activities:  Please choose a minimum of one.'
-    }
-}
+// function validateChecks(checkboxList) {
+//     let checkedArray = [];
+//     for (let i = 0; i < checkboxList.length; i++) {
+//         if (checkboxList[i].checked) {
+//             checkedArray.push(checkboxList[i]);
+//         }
+//     }
+//     if (checkedArray.length >= 1) {
+//         activitesLegend.removeAttribute('style');
+//         activitesLegend.innerHTML = 'Register for Activities';
+//     } else {
+//         activitesLegend.style.color = 'red';
+//         activitesLegend.innerHTML = 'Register for Activities:  Please choose a minimum of one.'
+//     }
+// }
     
     
 // this function disables any activity that has conflicting times.
@@ -166,6 +166,63 @@ function addListArray(list, arrayName) {;
     }
 }
 
+// TODO  Fix conditional statements for zip and cvv
+// function for validating credit card info
+function creditValidation() {
+    ccInputs = [];
+    addListArray(ccElList, ccInputs);
+    ccInputs.forEach( (element) => {
+        const ccNumLabel = document.querySelector('label[for="cc-num"]');
+        const zipLabel = document.querySelector('label[for="zip"]');
+        const cvvLabel = document.querySelector('label[for="cvv"]');
+        element.addEventListener('input', (e) => {
+            if (e.target.id === 'cc-num') {
+                if (!/^[0-9]\S*$/.test(e.target.value)) {
+                    ccNumLabel.style.color = 'red';
+                    ccNumLabel.innerHTML = 'Card Number: Please enter a valid number'
+                    return false;
+                } else if (/^[0-9]\S*$/.test(e.target.value) && 
+                e.target.value.length < 13 | 
+                e.target.value.length > 16) {
+                    ccNumLabel.style.color = 'red';
+                    ccNumLabel.innerHTML = 'Card Number: 13 to 16 digits long.'
+                    return false;
+                } else if (/^[0-9]\S*$/.test(e.target.value) && 
+                e.target.value.length >= 13 && 
+                e.target.value.length <= 16) {
+                    ccNumLabel.removeAttribute('style');
+                    ccNumLabel.innerHTML = 'Card Number:'
+                    return true;
+                }
+            } else if (e.target.id === 'zip') {
+                if (/^[0-9]{5}\S*$/.test(e.target.value)) {
+                    zipLabel.removeAttribute('style');
+                    zipLabel.innerHTML = 'Zip Code:';
+                    return true;
+                } else {
+                    zipLabel.style.color = 'red';
+                    zipLabel.innerHTML = 'Zip Code:';
+                    return false;
+                }
+            } else if (e.target.id === 'cvv') {
+                if (!/^[0-9]\S*$/.test(e.target.value)) {
+                    cvvLabel.style.color = 'red';
+                    cvvLabel.innerHTML = 'CVV: 3 to 4 digits';
+                    return false;
+                } else if (/^[0-9]\S*$/.test(e.target.value) &&
+                e.target.value.length >= 3 &&
+                e.target.value.length <= 4) {
+                    cvvLabel.removeAttribute('style');
+                    cvvLabel.innerHTML = 'CVV:';
+                    return true;
+                }
+            }
+
+        });
+    });
+}
+creditValidation();
+
 
 // displays proper fields based on payment method.
 hideEl(paypalInfo);
@@ -179,28 +236,10 @@ paymentMethod.addEventListener('change', (e) => {
         hideEl(paypalInfo);
         hideEl(bitcoinInfo);
     } else if (paymentMethod.value === 'credit card') {
-        ccInputs = [];
         submitButton.disabled = false;
         showEl(creditCardInfo, 'block');
         hideEl(paypalInfo);
         hideEl(bitcoinInfo);
-        addListArray(ccElList, ccInputs);
-// TODO finish conditional statements for validation of credit card info
-        ccInputs.forEach( (element) => {
-            element.addEventListener('input', (e) => {
-               const errorText =  e.target.parentElement.appendChild(p);
-               if (e.target.id === 'cc-num') {
-                    if (/^[0-9]\S*$/.test(e.target.value) && 
-                        e.target.value.length >= 13 && 
-                        e.target.value.length <= 16) {
-                        console.log('true');
-                    } else if (!/^[0-9]\S*$/.test(e.target.value)) {
-                        
-                    }
-                    
-               }
-            });
-        });
     } else if (paymentMethod.value === 'paypal') {
         submitButton.disabled = false;
         showEl(paypalInfo, 'block');
@@ -229,6 +268,7 @@ emailField.addEventListener('input', (e) => {
         emailField.setCustomValidity('Please Enter A Valid Email');
     }
 });
+
 
 
 
