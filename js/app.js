@@ -188,8 +188,16 @@ paymentMethod.addEventListener('change', (e) => {
 // TODO finish conditional statements for validation of credit card info
         ccInputs.forEach( (element) => {
             element.addEventListener('input', (e) => {
+               const errorText =  e.target.parentElement.appendChild(p);
                if (e.target.id === 'cc-num') {
-                   console.log('credit card');
+                    if (/^[0-9]\S*$/.test(e.target.value) && 
+                        e.target.value.length >= 13 && 
+                        e.target.value.length <= 16) {
+                        console.log('true');
+                    } else if (!/^[0-9]\S*$/.test(e.target.value)) {
+                        
+                    }
+                    
                }
             });
         });
