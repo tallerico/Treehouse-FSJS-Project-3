@@ -166,62 +166,62 @@ function addListArray(list, arrayName) {;
     }
 }
 
-// TODO  Fix conditional statements for zip and cvv
-// function for validating credit card info
-function creditValidation() {
-    ccInputs = [];
-    addListArray(ccElList, ccInputs);
-    ccInputs.forEach( (element) => {
-        const ccNumLabel = document.querySelector('label[for="cc-num"]');
-        const zipLabel = document.querySelector('label[for="zip"]');
-        const cvvLabel = document.querySelector('label[for="cvv"]');
-        element.addEventListener('input', (e) => {
-            if (e.target.id === 'cc-num') {
-                if (!/^[0-9]\S*$/.test(e.target.value)) {
-                    ccNumLabel.style.color = 'red';
-                    ccNumLabel.innerHTML = 'Card Number: Please enter a valid number'
-                    return false;
-                } else if (/^[0-9]\S*$/.test(e.target.value) && 
-                e.target.value.length < 13 | 
-                e.target.value.length > 16) {
-                    ccNumLabel.style.color = 'red';
-                    ccNumLabel.innerHTML = 'Card Number: 13 to 16 digits long.'
-                    return false;
-                } else if (/^[0-9]\S*$/.test(e.target.value) && 
-                e.target.value.length >= 13 && 
-                e.target.value.length <= 16) {
-                    ccNumLabel.removeAttribute('style');
-                    ccNumLabel.innerHTML = 'Card Number:'
-                    return true;
-                }
-            } else if (e.target.id === 'zip') {
-                if (/^[0-9]{5}\S*$/.test(e.target.value)) {
-                    zipLabel.removeAttribute('style');
-                    zipLabel.innerHTML = 'Zip Code:';
-                    return true;
-                } else {
-                    zipLabel.style.color = 'red';
-                    zipLabel.innerHTML = 'Zip Code:';
-                    return false;
-                }
-            } else if (e.target.id === 'cvv') {
-                if (!/^[0-9]\S*$/.test(e.target.value)) {
-                    cvvLabel.style.color = 'red';
-                    cvvLabel.innerHTML = 'CVV: 3 to 4 digits';
-                    return false;
-                } else if (/^[0-9]\S*$/.test(e.target.value) &&
-                e.target.value.length >= 3 &&
-                e.target.value.length <= 4) {
-                    cvvLabel.removeAttribute('style');
-                    cvvLabel.innerHTML = 'CVV:';
-                    return true;
-                }
-            }
+// // TODO  Fix conditional statements for zip and cvv
+// // function for validating credit card info
+// function creditValidation() {
+//     ccInputs = [];
+//     addListArray(ccElList, ccInputs);
+//     ccInputs.forEach( (element) => {
+//         const ccNumLabel = document.querySelector('label[for="cc-num"]');
+//         const zipLabel = document.querySelector('label[for="zip"]');
+//         const cvvLabel = document.querySelector('label[for="cvv"]');
+//         element.addEventListener('input', (e) => {
+//             if (e.target.id === 'cc-num') {
+//                 if (!/^[0-9]\S*$/.test(e.target.value)) {
+//                     ccNumLabel.style.color = 'red';
+//                     ccNumLabel.innerHTML = 'Card Number: Please enter a valid number'
+//                     return false;
+//                 } else if (/^[0-9]\S*$/.test(e.target.value) && 
+//                 e.target.value.length < 13 | 
+//                 e.target.value.length > 16) {
+//                     ccNumLabel.style.color = 'red';
+//                     ccNumLabel.innerHTML = 'Card Number: 13 to 16 digits long.'
+//                     return false;
+//                 } else if (/^[0-9]\S*$/.test(e.target.value) && 
+//                 e.target.value.length >= 13 && 
+//                 e.target.value.length <= 16) {
+//                     ccNumLabel.removeAttribute('style');
+//                     ccNumLabel.innerHTML = 'Card Number:'
+//                     return true;
+//                 }
+//             } else if (e.target.id === 'zip') {
+//                 if (/^[0-9]{5}\S*$/.test(e.target.value)) {
+//                     zipLabel.removeAttribute('style');
+//                     zipLabel.innerHTML = 'Zip Code:';
+//                     return true;
+//                 } else {
+//                     zipLabel.style.color = 'red';
+//                     zipLabel.innerHTML = 'Zip Code:';
+//                     return false;
+//                 }
+//             } else if (e.target.id === 'cvv') {
+//                 if (!/^[0-9]\S*$/.test(e.target.value)) {
+//                     cvvLabel.style.color = 'red';
+//                     cvvLabel.innerHTML = 'CVV: 3 to 4 digits';
+//                     return false;
+//                 } else if (/^[0-9]\S*$/.test(e.target.value) &&
+//                 e.target.value.length >= 3 &&
+//                 e.target.value.length <= 4) {
+//                     cvvLabel.removeAttribute('style');
+//                     cvvLabel.innerHTML = 'CVV:';
+//                     return true;
+//                 }
+//             }
 
-        });
-    });
-}
-creditValidation();
+//         });
+//     });
+// }
+// creditValidation();
 
 
 // displays proper fields based on payment method.
@@ -269,7 +269,11 @@ emailField.addEventListener('input', (e) => {
     }
 });
 
-
-
+let formsValid;
+// listen for submit button
+    // if there are no actvities checked
+        //indicate there need to be an activities checked
+    // if credit card is chosen and payment info is missing
+        //indicate what cc info needs to be corrected.
 
 
