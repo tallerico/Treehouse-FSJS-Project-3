@@ -21,9 +21,11 @@ const paypalInfo = document.querySelector('#paypal');
 const bitcoinInfo = document.querySelector('#bitcoin');
 const creditCardOption = document.querySelector('#payment option[value="credit card"]');
 const label = document.createElement('label');
+const div = document.createElement('div');
 const input = document.createElement('input');
 const p = document.createElement('p');
 let total = 0;
+
 
 
 
@@ -35,6 +37,7 @@ submitButton.addEventListener('click', (e) => {
         if(!checkValid()) {
             e.preventDefault();
             errorMessages();
+            activityChecks();
         }
     }
 });
@@ -86,10 +89,44 @@ function checkValid() {
     
 }
 
+// validating check fields
+function activityChecks() {
+    let activitiesChecked = [];
+    activitesLegend.removeAttribute('class');
+    activitesLegend.textContent = 'Register for Activities';
+    for(let i = 0; i < activities.length; i++) {
+        checkFor = activities[i];
+        if (checkFor.checked) {
+            activitiesChecked.push(checkFor);
+        }
+    }
+    if (activitiesChecked.length === 0) {
+        activitesLegend.classList.add('error');
+        activitesLegend.textContent = 'Register for Activities: Please Choose One.';
+        return false
+    } else {
+        return true;
+    }
+}
+
 function errorMessages() {
-       if (!validateFormValues(ccNumber)){
-           
-       } 
+        creditCardInfo.appendChild(div).classList.add('errors');
+        const errorDiv = document.querySelector('.errors');
+        const errorPara = errorDiv.appendChild(p).classList.add('error');
+        errorDiv.innerHTML = '';
+        if (!validateFormValues(ccNumber)) {
+            if (ccNumber.value.length <= 13){
+                errorDiv.innerHTML = '<p class="error">Please add a credit card number.</p>';  
+            } else if (ccNumber.value.length > 16) {
+                errorDiv.innerHTML = '<p class="error">Please add a credit card number between 13 and 16 digits long.</p>';
+            }
+        }
+        if (!validateFormValues(ccZip)) {
+            errorDiv.innerHTML += '<p class="error">Please enter a 5 digit zip.</p>';
+        }
+        if (!validateFormValues(ccCvv)) {
+            errorDiv.innerHTML += '<p class="error">Please enter a 3-4 digit CCV.</p>';
+        }
 }
 
 // realtime validation of email field.
