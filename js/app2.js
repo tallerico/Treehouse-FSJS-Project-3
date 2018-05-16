@@ -94,10 +94,9 @@ function activityChecks() {
     let activitiesChecked = [];
     activitesLegend.removeAttribute('class');
     activitesLegend.textContent = 'Register for Activities';
-    for(let i = 0; i < activities.length; i++) {
-        checkFor = activities[i];
-        if (checkFor.checked) {
-            activitiesChecked.push(checkFor);
+    for(let i = 0; i < eventChecks.length; i++) {
+        if (eventChecks[i].checked) {
+            activitiesChecked.push(eventChecks[i]);
         }
     }
     if (activitiesChecked.length === 0) {
