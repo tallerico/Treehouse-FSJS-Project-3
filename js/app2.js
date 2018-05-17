@@ -25,6 +25,7 @@ const div = document.createElement('div');
 const input = document.createElement('input');
 const p = document.createElement('p');
 let total = 0;
+let activitiesChecked = [];
 
 
 
@@ -35,9 +36,14 @@ document.addEventListener('load', setFocus(nameInput));
 submitButton.addEventListener('click', (e) => {
     if (paymentMethod.value === 'credit card') {
         if(!checkValid()) {
-            e.preventDefault();
+            activityChecks()
             errorMessages();
-            activityChecks();
+            e.preventDefault();
+        }
+    } else {
+        if(!checkValid()) {
+            activityChecks()
+            e.preventDefault();
         }
     }
 });
@@ -77,41 +83,40 @@ function validateFormValues(input) {
     return false;
 }
 
+//checking if all required form fields are valid.
 function checkValid() {
     if (validateFormValues(emailField) &&
     validateFormValues(ccNumber) &&
     validateFormValues(ccZip) &&
-    validateFormValues(ccCvv) === true) {
+    validateFormValues(ccCvv) &&
+    activityChecks() === true) {
         return true;
     } else {
         return false;
     }
-    
 }
 
 // validating check fields
 function activityChecks() {
-    let activitiesChecked = [];
-    activitesLegend.removeAttribute('class');
-    activitesLegend.textContent = 'Register for Activities';
     for(let i = 0; i < eventChecks.length; i++) {
         if (eventChecks[i].checked) {
             activitiesChecked.push(eventChecks[i]);
         }
     }
     if (activitiesChecked.length === 0) {
-        activitesLegend.classList.add('error');
-        activitesLegend.textContent = 'Register for Activities: Please Choose One.';
-        return false
+        activitesLegend.textContent = "Register for Activities(Please Choose One)."
+        activitesLegend.style.color = 'red';
+        return false;
     } else {
+        activitesLegend.textContent = "Register for Activities"
+        activitesLegend.style.color = '';
         return true;
     }
 }
 
 function errorMessages() {
-        creditCardInfo.appendChild(div).classList.add('errors');
-        const errorDiv = document.querySelector('.errors');
-        const errorPara = errorDiv.appendChild(p).classList.add('error');
+        creditCardInfo.appendChild(div).setAttribute('id', 'credit-errors');
+        const errorDiv = document.querySelector('#credit-errors');
         errorDiv.innerHTML = '';
         if (!validateFormValues(ccNumber)) {
             if (ccNumber.value.length <= 13){
@@ -215,7 +220,7 @@ function toggleConflict(choice, listCheck) {
 }
 
 //updates total based on selections.
-function updatePrice(chosenActivitie) {
+function updatePrice(chosenActivitie, parentElement) {
     const parentChosen = chosenActivitie.parentElement;
     const isChecked = chosenActivitie.checked;
     const price = parentChosen.textContent.split(/[$]/)[1].trim();
@@ -224,14 +229,14 @@ function updatePrice(chosenActivitie) {
         } else if (!isChecked) {
             total -= Number(price);
         }
-    activities.appendChild(p).innerHTML = `Total: $${total}`;
+    parentElement.appendChild(p).innerHTML = `Total: $${total}`;
 }
 
 //listening for change to check boxes
 activities.addEventListener('change', (e) => {
     const eventChosen = e.target;
     toggleConflict(eventChosen, eventChecks);
-    updatePrice(eventChosen);
+    updatePrice(eventChosen, activities);
 });
 
 
