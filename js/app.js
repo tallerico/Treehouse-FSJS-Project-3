@@ -1,9 +1,9 @@
-const fieldset = document.querySelectorAll('fieldset');
 const nameInput = document.querySelector('#name');
-const emailField = document.querySelector('#mail');
+const submitButton = document.querySelector('button[type="submit"]');
 const jobRole = document.querySelector('#title');
 const otherJob = document.querySelector('#other-title');
-const submitButton = document.querySelector('button[type="submit"]');
+const emailLabel = document.querySelector('label[for="mail"]');
+const emailField = document.querySelector('#mail');
 const tshirtDesign = document.querySelector('#design');
 const colorLabel = document.querySelector('#colors-js-puns label');
 const colorSelection = document.querySelector('#color');
@@ -12,45 +12,142 @@ const activities = document.querySelector('.activities');
 const activitesLegend = document.querySelector('.activities legend');
 const eventsLabel = document.querySelectorAll('.activities label');
 const eventChecks = document.querySelectorAll('.activities label input');
+const ccNumber = document.querySelector('#cc-num');
+const ccZip = document.querySelector('#zip');
+const ccCvv = document.querySelector('#cvv');
 const paymentMethod = document.querySelector('#payment');
 const creditCardInfo = document.querySelector('#credit-card');
 const paypalInfo = document.querySelector('#paypal');
 const bitcoinInfo = document.querySelector('#bitcoin');
 const creditCardOption = document.querySelector('#payment option[value="credit card"]');
-const emailLabel = document.querySelector('label[for="mail"]');
-const ccNumber = document.querySelector('#cc-num');
-let ccInputs = [];
-const ccElList = document.querySelectorAll('#credit-card input');
-const ccZip = document.querySelector('#zip');
-const ccCvv = document.querySelector('#cvv');
 const label = document.createElement('label');
+const div = document.createElement('div');
 const input = document.createElement('input');
 const p = document.createElement('p');
 let total = 0;
+let activitiesChecked = [];
+
+
+
 
 //setting focus to name field
 document.addEventListener('load', setFocus(nameInput));
-// running validation check to show atleast one check needs to be checked before submit
-// document.addEventListener('load', validateChecks(eventChecks));
+
+submitButton.addEventListener('click', (e) => {
+    if (paymentMethod.value === 'credit card') {
+        if(!checkValid()) {
+            activityChecks()
+            errorMessages();
+            e.preventDefault();
+        }
+    } else {
+        if(!checkValid()) {
+            activityChecks()
+            e.preventDefault();
+        }
+    }
+});
+
+// ---------- HELPER FUNCTIONS ----
 
 // reusable function to simply add focus to an element.
 function setFocus(element) {
     element.focus();
 }
-
-// simple function that hides an element  
-
+// function that hides an element  
 function hideEl(el) {
     el.style.display = 'none'
 }
-
-// simple function that shows an element
+// function that shows an element
 function showEl(el, displayProp) {
     el.style.display = [displayProp];
 }
 
+// ---------- VALIDATION FUNCTIONS ----
 
-// initially hiding div containing field for user to add job title 
+// validating format of values in form fields. 
+function validateFormValues(input) {
+    var emailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/;
+    var creditCardFormat = /^[0-9]{13,16}$/;
+    var zipFormat = /^[0-9]{5}$/;
+    var cvvFormat = /^[0-9]{3}$/;
+    if (input.id == 'mail' && input.value.match(emailFormat)) {
+      return true;
+    } else if (input.id == 'cc-num' && input.value.match(creditCardFormat)) {
+      return true;
+    } else if (input.id == 'zip' && input.value.match(zipFormat)) {
+      return true;
+    } else if (input.id == 'cvv' && input.value.match(cvvFormat)) {
+      return true;
+    }
+    return false;
+}
+
+//checking if all required form fields are valid.
+function checkValid() {
+    if (validateFormValues(emailField) &&
+    validateFormValues(ccNumber) &&
+    validateFormValues(ccZip) &&
+    validateFormValues(ccCvv) &&
+    activityChecks() === true) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// validating check fields
+function activityChecks() {
+    for(let i = 0; i < eventChecks.length; i++) {
+        if (eventChecks[i].checked) {
+            activitiesChecked.push(eventChecks[i]);
+        }
+    }
+    if (activitiesChecked.length === 0) {
+        activitesLegend.textContent = "Register for Activities(Please Choose One)."
+        activitesLegend.style.color = 'red';
+        return false;
+    } else {
+        activitesLegend.textContent = "Register for Activities"
+        activitesLegend.style.color = '';
+        return true;
+    }
+}
+
+function errorMessages() {
+        creditCardInfo.appendChild(div).setAttribute('id', 'credit-errors');
+        const errorDiv = document.querySelector('#credit-errors');
+        errorDiv.innerHTML = '';
+        if (!validateFormValues(ccNumber)) {
+            if (ccNumber.value.length <= 13){
+                errorDiv.innerHTML = '<p class="error">Please add a credit card number.</p>';  
+            } else if (ccNumber.value.length > 16) {
+                errorDiv.innerHTML = '<p class="error">Please add a credit card number between 13 and 16 digits long.</p>';
+            }
+        }
+        if (!validateFormValues(ccZip)) {
+            errorDiv.innerHTML += '<p class="error">Please enter a 5 digit zip.</p>';
+        }
+        if (!validateFormValues(ccCvv)) {
+            errorDiv.innerHTML += '<p class="error">Please enter a 3-4 digit CCV.</p>';
+        }
+}
+
+// realtime validation of email field.
+emailField.addEventListener('input', (e) => {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(emailField.value)) {
+        emailLabel.removeAttribute('style');
+        emailLabel.textContent = 'Email:';
+        emailField.setCustomValidity('');
+    } else {
+        emailLabel.style.color = 'red';                                    
+        emailLabel.textContent = 'Email: (Please Enter Valid email: example@example.com';
+        emailField.setCustomValidity('Please Enter A Valid Email');
+    }
+});
+
+// ---------- JOB ROLE ----
+
 hideEl(otherJob);
 // showing and hiding job field based on user choice
 jobRole.addEventListener('change', () => {
@@ -61,6 +158,7 @@ jobRole.addEventListener('change', () => {
     }
 }); 
 
+// ---------- T-Shirt Design ----
 // hiding color section until user selects tshirt design
 hideEl(colorLabel);
 hideEl(colorSelection);
@@ -93,60 +191,56 @@ tshirtDesign.addEventListener('change', () => {
         hideEl(colorSelection);
     }
 });
-    
+
+// ---------- Session Choices ----
 // this function disables any activity that has conflicting times.
 function toggleConflict(choice, listCheck) {
-        const eventChecked = choice.checked;
-        const parentChosen = choice.parentElement;
-        const selectionTime = parentChosen.textContent.split(/[—,$]/)[1].trim();
-        const selectionEvent = parentChosen.textContent.split(/[—,$]/)[0].trim();
-        for (let i = 0; i < listCheck.length; i++) {
-            let conflict = listCheck[i];
-            const conflictParent = conflict.parentElement;
-            const conflictTime = conflictParent.textContent.split(/[—,$]/)[1].trim();
-            const conflictEvent =  conflictParent.textContent.split(/[—,$]/)[0].trim();
-            if ((selectionTime === conflictTime) && 
-                (selectionEvent != conflictEvent) && 
-                eventChecked) {
-                conflictParent.classList.add('notAvail');
-                conflict.disabled = true;
-            } else if ((selectionTime === conflictTime) && 
-                        (selectionEvent != conflictEvent) && 
-                        !eventChecked) {
-                conflictParent.classList.remove('notAvail');
-                conflict.disabled = false;
-            }
+    const eventChecked = choice.checked;
+    const parentChosen = choice.parentElement;
+    const selectionTime = parentChosen.textContent.split(/[—,$]/)[1].trim();
+    const selectionEvent = parentChosen.textContent.split(/[—,$]/)[0].trim();
+    for (let i = 0; i < listCheck.length; i++) {
+        let conflict = listCheck[i];
+        const conflictParent = conflict.parentElement;
+        const conflictTime = conflictParent.textContent.split(/[—,$]/)[1].trim();
+        const conflictEvent =  conflictParent.textContent.split(/[—,$]/)[0].trim();
+        if ((selectionTime === conflictTime) && 
+            (selectionEvent != conflictEvent) && 
+            eventChecked) {
+            conflictParent.classList.add('notAvail');
+            conflict.disabled = true;
+        } else if ((selectionTime === conflictTime) && 
+                    (selectionEvent != conflictEvent) && 
+                    !eventChecked) {
+            conflictParent.classList.remove('notAvail');
+            conflict.disabled = false;
         }
+    }
 
 }
 
 //updates total based on selections.
-function updatePrice(chosenActivitie) {
+function updatePrice(chosenActivitie, parentElement) {
     const parentChosen = chosenActivitie.parentElement;
     const isChecked = chosenActivitie.checked;
     const price = parentChosen.textContent.split(/[$]/)[1].trim();
-    if (isChecked) {
-        total += Number(price);
-    } else if (!isChecked) {
-        total -= Number(price);
-    }
-    activities.appendChild(p).innerHTML = `Total: $${total}`;
+        if (isChecked) {
+            total += Number(price);
+        } else if (!isChecked) {
+            total -= Number(price);
+        }
+    parentElement.appendChild(p).innerHTML = `Total: $${total}`;
 }
 
 //listening for change to check boxes
 activities.addEventListener('change', (e) => {
     const eventChosen = e.target;
-    validateChecks(eventChecks);
     toggleConflict(eventChosen, eventChecks);
-    updatePrice(eventChosen);
-}); 
+    updatePrice(eventChosen, activities);
+});
 
-// function to add node list to an array
-function addListArray(list, arrayName) {;
-    for(let i = 0; i < list.length; i++) {
-        arrayName.push(list[i]);
-    }
-}
+
+// ---------- Payment Method ----
 
 // displays proper fields based on payment method.
 hideEl(paypalInfo);
@@ -176,111 +270,3 @@ paymentMethod.addEventListener('change', (e) => {
         hideEl(paypalInfo);
     }
 });
-
-
-
-
-// realtime validation of email field.
-emailField.addEventListener('input', (e) => {
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(emailField.value)) {
-        emailLabel.removeAttribute('style');
-        emailLabel.textContent = 'Email:';
-        emailField.setCustomValidity('');
-    } else {
-        emailLabel.style.color = 'red';                                    
-        emailLabel.textContent = 'Email: (Please Enter Valid email: example@example.com';
-        emailField.setCustomValidity('Please Enter A Valid Email');
-    }
-});
-
-//validating checks in realtime
-function validateChecks(checkboxList) {
-    let checkedArray = [];
-    for (let i = 0; i < checkboxList.length; i++) {
-        if (checkboxList[i].checked) {
-            checkedArray.push(checkboxList[i]);
-        }
-    }
-    if (checkedArray.length >= 1) {
-        activitesLegend.removeAttribute('style');
-        activitesLegend.innerHTML = 'Register for Activities';
-        return true;
-    } else {
-        activitesLegend.style.color = 'red';
-        activitesLegend.innerHTML = 'Register for Activities:  Please choose a minimum of one.'
-        return false
-    }
-}
-
-// listen for submit button
-    // if there are no actvities checked
-        //indicate there need to be an activities checked
-    // if credit card is chosen and payment info is missing
-        //indicate what cc info needs to be corrected.
-// // TODO  Fix conditional statements for zip and cvv
-// // function for validating credit card info
-function creditValidation() {
-    ccInputs = [];
-    addListArray(ccElList, ccInputs);
-    ccInputs.forEach( (element) => {
-        const ccNumLabel = document.querySelector('label[for="cc-num"]');
-        const zipLabel = document.querySelector('label[for="zip"]');
-        const cvvLabel = document.querySelector('label[for="cvv"]');
-        element.addEventListener('input', (e) => {
-            if (e.target.id === 'cc-num') {
-                if (!/^[0-9]\S*$/.test(e.target.value)) {
-                    ccNumLabel.style.color = 'red';
-                    ccNumLabel.innerHTML = 'Card Number: Please enter a valid number'
-                    return false;
-                } else if (/^[0-9]\S*$/.test(e.target.value) && 
-                e.target.value.length < 13 | 
-                e.target.value.length > 16) {
-                    ccNumLabel.style.color = 'red';
-                    ccNumLabel.innerHTML = 'Card Number: 13 to 16 digits long.'
-                    return false;
-                } else if (/^[0-9]\S*$/.test(e.target.value) && 
-                e.target.value.length >= 13 && 
-                e.target.value.length <= 16) {
-                    ccNumLabel.removeAttribute('style');
-                    ccNumLabel.innerHTML = 'Card Number:'
-                    return true;
-                }
-            } else if (e.target.id === 'zip') {
-                if (/^[0-9]{5}\S*$/.test(e.target.value)) {
-                    zipLabel.removeAttribute('style');
-                    zipLabel.innerHTML = 'Zip Code:';
-                    return true;
-                } else {
-                    zipLabel.style.color = 'red';
-                    zipLabel.innerHTML = 'Zip Code:';
-                    return false;
-                }
-            } else if (e.target.id === 'cvv') {
-                if (!/^[0-9]\S*$/.test(e.target.value)) {
-                    cvvLabel.style.color = 'red';
-                    cvvLabel.innerHTML = 'CVV: 3 to 4 digits';
-                    return false;
-                } else if (/^[0-9]\S*$/.test(e.target.value) &&
-                e.target.value.length >= 3 &&
-                e.target.value.length <= 4) {
-                    cvvLabel.removeAttribute('style');
-                    cvvLabel.innerHTML = 'CVV:';
-                    return true;
-                }
-            }
-
-        });
-    });
-}
-creditValidation();
-
-submitButton.addEventListener('click', (e) => {
-    validateChecks(eventChecks);
-    if (validateChecks(eventChecks)) {
-        console.log('yes');
-    } else {
-        e.preventDefault();
-    }
-
-});
-
