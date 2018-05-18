@@ -27,9 +27,6 @@ const p = document.createElement('p');
 let total = 0;
 let activitiesChecked = [];
 
-
-
-
 //setting focus to name field
 document.addEventListener('load', setFocus(nameInput));
 
